@@ -1,0 +1,27 @@
+version: '2'
+services:
+  minio:
+    container_name: Minio
+    command: server /data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    image: quay.io/minio/minio:latest
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    volumes:
+      - /docker/minio:/data
+    restart: unless-stopped
+
+  timescaledb:
+    image: timescale/timescaledb:latest-pg14
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: timescaledb
+      POSTGRES_PASSWORD: password
+    volumes:
+    - ./timescale:/var/lib/postgresql
+  
